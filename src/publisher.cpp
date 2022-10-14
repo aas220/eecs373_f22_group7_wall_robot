@@ -23,6 +23,16 @@ void cmd_vel_Callback(const geometry_msgs::Twist desiredVelocity)
 {
     ROS_INFO("I heard");
     p_pub->publish(desiredVelocity);
+    if (laserAllowed){
+        p_pub->publish(desiredVelocity);
+    }
+    else {
+        ROS_ERROR("Not allowed to move forward");
+        if (desiredVelocity.linear.x < 0) {
+            p_pub->publish(desiredVelocity);
+        }
+    }
+
 }
 
 void laser_vel_Callback(const sensor_msgs::LaserScan::ConstPtr& msg)
