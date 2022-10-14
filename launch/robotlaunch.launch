@@ -1,0 +1,4 @@
+<launch>
+<arg name="robot_name" value="robot0"/>
+<node pkg="wall_robot" type="publisher_node" name = "wall_robot" args="__ns:=$(arg robot_name)"/>
+</launch>

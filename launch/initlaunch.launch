@@ -1,0 +1,5 @@
+<launch>
+<include file="$(find wall_robot)/launch/robotlaunch.launch"/>
+<include file="$(find stdr_launchers)/launch/server_with_map_and_gui.launch"/>
+<node pkg="rqt_robot_steering" type="rqt_robot_steering" name="steering_gui"/>
+</launch>

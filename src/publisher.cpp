@@ -6,10 +6,12 @@
 #include <sensor_msgs/LaserScan.h>
 #include "ros/ros.h"
 #include "std_msgs/String.h"
-
 #include <sstream>
+#include <vector>
+
 // Create a global to hold a pointer to the Publisher.
 ros::Publisher* p_pub;
+ros::Publisher* test_pub;
 
 
 /**
@@ -19,6 +21,21 @@ void cmd_vel_Callback(const geometry_msgs::Twist msg)
 {
     ROS_INFO("I heard");
     p_pub->publish(msg);
+}
+
+void laser_vel_Callback(const sensor_msgs::LaserScan::ConstPtr& msg)
+{
+  
+    int rangesize = msg->ranges.size();
+    std::vector<float>vectorRange[] = { msg->ranges };
+    float* range = &vectorRange[0][0];
+    
+    for (int i = 0; i < rangesize; i++) {
+        ROS_INFO("%f", vectorRange[0][i]);
+    }
+    //ROS_INFO(" %p", range);
+    //test_pub->publish(range);
+     
 }
 
 int main(int argc, char** argv)
@@ -60,9 +77,14 @@ int main(int argc, char** argv)
      * buffer up before throwing some away.
      */
     ros::Publisher vel_pub = n.advertise<geometry_msgs::Twist>("cmd_vel", 1000);
+    ros::Publisher test_pub2 = n.advertise<sensor_msgs::LaserScan>("test_topicl", 1000);
     p_pub = &vel_pub;
+    test_pub = &test_pub2;
+
     ros::Rate loop_rate(10);
-    ros::Subscriber sub = n.subscribe("des_vel", 1000, cmd_vel_Callback);
+    ros::Subscriber sub = n.subscribe<geometry_msgs::Twist>("des_vel", 1000, cmd_vel_Callback);
+    ros::Subscriber laserSub = n.subscribe<sensor_msgs::LaserScan>("laser_1", 1000, laser_vel_Callback);
+   
 
     /**
      * A count of how many messages we have sent. This is used to create
