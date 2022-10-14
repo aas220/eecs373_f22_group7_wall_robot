@@ -8,10 +8,19 @@
 #include "std_msgs/String.h"
 
 #include <sstream>
+// Create a global to hold a pointer to the Publisher.
+ros::Publisher* p_pub;
+
 
 /**
  * This tutorial demonstrates simple sending of messages over the ROS system.
  */
+void cmd_vel_Callback(const geometry_msgs::Twist msg)
+{
+    ROS_INFO("I heard");
+    p_pub->publish(msg);
+}
+
 int main(int argc, char** argv)
 {
     /**
@@ -51,8 +60,9 @@ int main(int argc, char** argv)
      * buffer up before throwing some away.
      */
     ros::Publisher vel_pub = n.advertise<geometry_msgs::Twist>("cmd_vel", 1000);
-
+    p_pub = &vel_pub;
     ros::Rate loop_rate(10);
+    ros::Subscriber sub = n.subscribe("des_vel", 1000, cmd_vel_Callback);
 
     /**
      * A count of how many messages we have sent. This is used to create
