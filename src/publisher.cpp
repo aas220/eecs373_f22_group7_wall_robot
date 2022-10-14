@@ -12,29 +12,32 @@
 // Create a global to hold a pointer to the Publisher.
 ros::Publisher* p_pub;
 ros::Publisher* test_pub;
+bool laserAllowed;
+
 
 
 /**
  * This tutorial demonstrates simple sending of messages over the ROS system.
  */
-void cmd_vel_Callback(const geometry_msgs::Twist msg)
+void cmd_vel_Callback(const geometry_msgs::Twist desiredVelocity)
 {
     ROS_INFO("I heard");
-    p_pub->publish(msg);
+    p_pub->publish(desiredVelocity);
 }
 
 void laser_vel_Callback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
-  
-    int rangesize = msg->ranges.size();
     std::vector<float>vectorRange[] = { msg->ranges };
-    float* range = &vectorRange[0][0];
-    
-    for (int i = 0; i < rangesize; i++) {
-        ROS_INFO("%f", vectorRange[0][i]);
+   // ROS_INFO("%f", vectorRange[0][0]);
+    if (vectorRange[0][135] > 1) {
+        laserAllowed = true;
+        ROS_INFO("%d",laserAllowed);
     }
-    //ROS_INFO(" %p", range);
-    //test_pub->publish(range);
+    else {
+        laserAllowed = false;
+        ROS_INFO("%d", laserAllowed);
+    }
+    
      
 }
 
